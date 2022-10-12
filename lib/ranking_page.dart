@@ -3,14 +3,14 @@ import 'dart:html';
 import 'package:flutter/material.dart';
 import 'package:quiz/app_controller.dart';
 
-class HomePage extends StatefulWidget {
+class RankingTable extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return HomePageState();
+    return RankingTableState();
   }
 }
 
-class HomePageState extends State<HomePage> {
+class RankingTableState extends State<RankingTable> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,25 +32,57 @@ class HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        child: Column(
-          children: const <Widget>[
-            Spacer(),
-            ElevatedCardExample(
-              title: 'Conhecimentos Gerais',
-            ),
-            ElevatedCardExample(
-              title: 'Conhecimentos Específicos',
-            ),
-            ElevatedCardExample(
-              title: 'Vingadores',
-            ),
-            Spacer(),
-          ],
+      body: ListView(children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Center(
+              child: Text(
+            'Melhores Jogadores',
+            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+          )),
         ),
-      ),
+        Padding(
+          padding: const EdgeInsets.all(40.0),
+          child: DataTable(
+            columns: [
+              DataColumn(
+                  label: Text('Nome',
+                      style: TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold))),
+              DataColumn(
+                  label: Text('Acertos',
+                      style: TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold))),
+              DataColumn(
+                  label: Text('Tempo',
+                      style: TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold))),
+            ],
+            rows: [
+              DataRow(cells: [
+                DataCell(Text('Stephen')),
+                DataCell(Text('10')),
+                DataCell(Text('2 min')),
+              ]),
+              DataRow(cells: [
+                DataCell(Text('Maluco')),
+                DataCell(Text('9')),
+                DataCell(Text('3 min')),
+              ]),
+              DataRow(cells: [
+                DataCell(Text('Jane')),
+                DataCell(Text('8')),
+                DataCell(Text('4 min')),
+              ]),
+              DataRow(cells: [
+                DataCell(Text('Carinha que mora logo ali')),
+                DataCell(Text('7')),
+                DataCell(Text('5 min')),
+              ]),
+            ],
+          ),
+        ),
+      ]),
       floatingActionButton: FloatingActionButton(
         backgroundColor:
             AppController.instance.isDartTheme ? Colors.green : Colors.green,
@@ -73,28 +105,6 @@ class HomePageState extends State<HomePage> {
                     children: <Widget>[
                       TextButton.icon(
                         icon: Icon(
-                          Icons.star_rate_rounded,
-                          size: 16,
-                          color: AppController.instance.isDartTheme
-                              ? Colors.green
-                              : Colors.white,
-                        ),
-                        label: Text(
-                          'Ranking',
-                          style: TextStyle(
-                            color: AppController.instance.isDartTheme
-                                ? Colors.green
-                                : Colors.white,
-                          ),
-                        ),
-                        onPressed: () =>
-                            Navigator.of(context).pushNamed('/ranking'),
-                      ),
-                      Container(
-                        height: 30,
-                      ),
-                      TextButton.icon(
-                        icon: Icon(
                           Icons.people,
                           size: 16,
                           color: AppController.instance.isDartTheme
@@ -109,16 +119,14 @@ class HomePageState extends State<HomePage> {
                                 : Colors.white,
                           ),
                         ),
-                        onPressed: () =>
-                            Navigator.of(context).pushNamed('/edit-user'),
+                        onPressed: () => Navigator.pop(context),
                       ),
                       Container(
                         height: 30,
                       ),
                       ElevatedButton(
                         child: Text('Sair'),
-                        onPressed: () =>
-                            Navigator.of(context).popAndPushNamed('/'),
+                        onPressed: () => Navigator.pop(context),
                       ),
                     ],
                   ),

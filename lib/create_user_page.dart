@@ -5,20 +5,23 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:quiz/home_page.dart';
 import 'package:quiz/app_widget.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class CreateUser extends StatefulWidget {
+  const CreateUser({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<CreateUser> createState() => _CreateUser();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _CreateUser extends State<CreateUser> {
+  String name = '';
+  int age = 0;
   String email = '';
   String password = '';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: SingleChildScrollView(
         child: SizedBox(
           width: MediaQuery.of(context).size.width,
@@ -28,6 +31,30 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                TextField(
+                    onChanged: ((value) {
+                      name = value;
+                      print(name);
+                    }),
+                    keyboardType: TextInputType.name,
+                    decoration: InputDecoration(
+                      labelText: "Nome",
+                    )),
+                Container(
+                  height: 20,
+                ),
+                TextField(
+                    onChanged: ((value) {
+                      age = int.parse(value);
+                      print(age);
+                    }),
+                    keyboardType: TextInputType.name,
+                    decoration: InputDecoration(
+                      labelText: "Idade",
+                    )),
+                Container(
+                  height: 20,
+                ),
                 TextField(
                     onChanged: ((value) {
                       email = value;
@@ -54,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 ElevatedButton(
                     child: Text(
-                      "Entrar",
+                      "Cadastrar",
                     ),
                     onPressed: () {
                       if (email == 'gustavo@gmail.com' && password == '123') {
@@ -66,22 +93,6 @@ class _LoginPageState extends State<LoginPage> {
                 Container(
                   height: 20,
                 ),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      TextButton.icon(
-                        icon: Icon(Icons.people, size: 16),
-                        label: Text('Cadastre-se'),
-                        onPressed: () =>
-                            Navigator.of(context).pushNamed('/create-user'),
-                      ),
-                      TextButton.icon(
-                        icon: Icon(Icons.replay_rounded, size: 16),
-                        label: Text('Esqueceu sua senha ?'),
-                        onPressed: () =>
-                            Navigator.of(context).pushNamed('/ranking'),
-                      ),
-                    ]),
               ],
             ),
           ),
