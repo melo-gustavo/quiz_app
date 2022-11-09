@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:quiz/app_controller.dart';
 import 'package:quiz/edit_user_page.dart';
 import 'package:quiz/login_page.dart';
+import 'package:quiz/quiz_page.dart';
 import 'package:quiz/ranking_page.dart';
+import 'package:quiz/result_page.dart';
 
 import 'create_user_page.dart';
 import 'home_page.dart';
@@ -29,6 +31,10 @@ class AppWidget extends StatelessWidget {
             '/create-user': (context) => CreateUser(),
             '/ranking': (context) => RankingTable(),
             '/edit-user': (context) => EditUser(),
+            '/quiz': (context) => QuizPage(),
+            '/result': (context) => Result(
+                  rightQuestions: 3,
+                )
           },
         );
       },

@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:flutter/material.dart';
 import 'package:quiz/app_controller.dart';
 
@@ -32,23 +30,35 @@ class HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        child: Column(
-          children: const <Widget>[
-            Spacer(),
-            ElevatedCardExample(
-              title: 'Conhecimentos Gerais',
-            ),
-            ElevatedCardExample(
-              title: 'Conhecimentos Específicos',
-            ),
-            ElevatedCardExample(
-              title: 'Vingadores',
-            ),
-            Spacer(),
-          ],
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Card(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              const ListTile(
+                title: Text(
+                  'Conhecimentos Gerais',
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  TextButton(
+                    child: const Text(
+                      'JOGAR',
+                      style: TextStyle(fontSize: 17),
+                    ),
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/quiz');
+                    },
+                  ),
+                  const SizedBox(width: 15),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
