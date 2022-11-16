@@ -32,9 +32,7 @@ class AppWidget extends StatelessWidget {
             '/ranking': (context) => RankingTable(),
             '/edit-user': (context) => EditUser(),
             '/quiz': (context) => QuizPage(),
-            '/result': (context) => Result(
-                  rightQuestions: 3,
-                )
+            '/result': (context) => Result(),
           },
         );
       },

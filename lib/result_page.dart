@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:quiz/app_controller.dart';
+import 'package:quiz/quiz_page.dart';
 
 class Result extends StatefulWidget {
-  int rightQuestions;
+  const Result({super.key});
 
-  // ignore: use_key_in_widget_constructors
-  Result({required this.rightQuestions});
+  static const routeName = '/result';
 
   @override
   State<Result> createState() => _ResultState();
@@ -14,6 +14,8 @@ class Result extends StatefulWidget {
 class _ResultState extends State<Result> {
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments as ScreenArguments;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor:
@@ -39,10 +41,11 @@ class _ResultState extends State<Result> {
           children: [
             Text("Resultado",
                 style: TextStyle(fontSize: 28, fontWeight: FontWeight.normal)),
-            Text("Você acertou ${widget.rightQuestions}/10",
+            Text(
+                "Você acertou ${args.rightQuestions}/${args.sizeQuestionsQuiz}",
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
             ElevatedButton(
-                onPressed: (() => {print("Pressionando")}),
+                onPressed: (() => {Navigator.pushNamed(context, '/home')}),
                 child: Text("Retornar"))
           ],
         ),

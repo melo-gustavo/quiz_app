@@ -2,6 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:quiz/app_controller.dart';
 import 'package:quiz/result_page.dart';
 
+class ScreenArguments {
+  final int rightQuestions;
+  final int sizeQuestionsQuiz;
+
+  ScreenArguments(this.rightQuestions, this.sizeQuestionsQuiz);
+}
+
 class QuizPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -11,8 +18,6 @@ class QuizPage extends StatefulWidget {
 
 class QuizPageState extends State<QuizPage> {
   @override
-  int contador = 0;
-
   List questionsQuiz = [
     {
       "question": "Quem descobriu o Brasil ?",
@@ -93,11 +98,12 @@ class QuizPageState extends State<QuizPage> {
 
     void finished(int questionNumber) {
       if (questionNumber == sizeQuestionsQuiz) {
-        print("Quiz encerrado!");
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => Result(rightQuestions: rightQuestions)));
+        // Navigator.pushReplacementNamed(
+        //   context,
+        //   '/result',
+        // );
+        Navigator.of(context).pushReplacementNamed('/result',
+            arguments: ScreenArguments(rightQuestions, sizeQuestionsQuiz));
       }
     }
 
