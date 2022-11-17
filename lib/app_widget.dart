@@ -5,6 +5,7 @@ import 'package:quiz/login_page.dart';
 import 'package:quiz/quiz_page.dart';
 import 'package:quiz/ranking_page.dart';
 import 'package:quiz/result_page.dart';
+import 'checagem_page.dart';
 
 import 'create_user_page.dart';
 import 'home_page.dart';
@@ -26,7 +27,8 @@ class AppWidget extends StatelessWidget {
           ),
           initialRoute: '/',
           routes: {
-            '/': (context) => LoginPage(),
+            '/': (context) => ChecagemPage(),
+            '/login': (context) => LoginPage(),
             '/home': (context) => HomePage(),
             '/create-user': (context) => CreateUser(),
             '/ranking': (context) => RankingTable(),

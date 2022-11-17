@@ -1,4 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:quiz/create_user_page.dart';
+
+import 'home_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -8,8 +12,9 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  String email = '';
-  String password = '';
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _firebaseAuth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -23,23 +28,16 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                TextField(
-                    onChanged: ((value) {
-                      email = value;
-                      print(email);
-                    }),
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                      labelText: "Email",
-                    )),
+                TextFormField(
+                  controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(labelText: "Email"),
+                ),
                 Container(
                   height: 20,
                 ),
-                TextField(
-                  onChanged: ((value) {
-                    password = value;
-                    print(password);
-                  }),
+                TextFormField(
+                  controller: _passwordController,
                   keyboardType: TextInputType.visiblePassword,
                   obscureText: true,
                   decoration: InputDecoration(labelText: "Senha"),
@@ -52,11 +50,7 @@ class _LoginPageState extends State<LoginPage> {
                       "Entrar",
                     ),
                     onPressed: () {
-                      if (email == 'gustavo@gmail.com' && password == '123') {
-                        Navigator.of(context).pushReplacementNamed('/home');
-                      } else {
-                        print("Acesso negado!");
-                      }
+                      login();
                     }),
                 Container(
                   height: 20,
@@ -67,8 +61,10 @@ class _LoginPageState extends State<LoginPage> {
                       TextButton.icon(
                         icon: Icon(Icons.people, size: 16),
                         label: Text('Cadastre-se'),
-                        onPressed: () =>
-                            Navigator.of(context).pushNamed('/create-user'),
+                        onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CreateUser())),
                       ),
                       TextButton.icon(
                         icon: Icon(Icons.replay_rounded, size: 16),
@@ -83,5 +79,33 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  login() async {
+    try {
+      UserCredential userCredential =
+          await _firebaseAuth.signInWithEmailAndPassword(
+              email: _emailController.text, password: _passwordController.text);
+      if (userCredential != null) {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => HomePage()));
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Usuário não encontrado'),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      } else if (e.code == 'wrong-password') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Sua senha está incorreta'),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      }
+    }
   }
 }
