@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:quiz/app_controller.dart';
+import 'package:quiz/checagem_page.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -9,6 +11,8 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
+  final _firebaseAuth = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -126,10 +130,10 @@ class HomePageState extends State<HomePage> {
                         height: 30,
                       ),
                       ElevatedButton(
-                        child: Text('Sair'),
-                        onPressed: () =>
-                            Navigator.of(context).popAndPushNamed('/'),
-                      ),
+                          child: Text('Sair'),
+                          onPressed: () {
+                            sair();
+                          }),
                     ],
                   ),
                 ),
@@ -139,6 +143,11 @@ class HomePageState extends State<HomePage> {
         },
       ),
     );
+  }
+
+  sair() async {
+    _firebaseAuth.signOut().then((user) => Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => ChecagemPage())));
   }
 }
 

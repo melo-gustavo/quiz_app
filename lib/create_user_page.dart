@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:quiz/checagem_page.dart';
 import 'package:quiz/home_page.dart';
 import 'package:quiz/app_widget.dart';
 
@@ -13,15 +15,18 @@ class CreateUser extends StatefulWidget {
 }
 
 class _CreateUser extends State<CreateUser> {
-  String name = '';
-  int age = 0;
-  String email = '';
-  String password = '';
+  final _nomeController = TextEditingController();
+  final _idadeController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _firebaseAuth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text('Cadastro'),
+      ),
       body: SingleChildScrollView(
         child: SizedBox(
           width: MediaQuery.of(context).size.width,
@@ -31,11 +36,8 @@ class _CreateUser extends State<CreateUser> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                TextField(
-                    onChanged: ((value) {
-                      name = value;
-                      print(name);
-                    }),
+                TextFormField(
+                    controller: _nomeController,
                     keyboardType: TextInputType.name,
                     decoration: InputDecoration(
                       labelText: "Nome",
@@ -43,11 +45,8 @@ class _CreateUser extends State<CreateUser> {
                 Container(
                   height: 20,
                 ),
-                TextField(
-                    onChanged: ((value) {
-                      age = int.parse(value);
-                      print(age);
-                    }),
+                TextFormField(
+                    controller: _idadeController,
                     keyboardType: TextInputType.name,
                     decoration: InputDecoration(
                       labelText: "Idade",
@@ -55,11 +54,8 @@ class _CreateUser extends State<CreateUser> {
                 Container(
                   height: 20,
                 ),
-                TextField(
-                    onChanged: ((value) {
-                      email = value;
-                      print(email);
-                    }),
+                TextFormField(
+                    controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                       labelText: "Email",
@@ -67,11 +63,8 @@ class _CreateUser extends State<CreateUser> {
                 Container(
                   height: 20,
                 ),
-                TextField(
-                  onChanged: ((value) {
-                    password = value;
-                    print(password);
-                  }),
+                TextFormField(
+                  controller: _passwordController,
                   keyboardType: TextInputType.visiblePassword,
                   obscureText: true,
                   decoration: InputDecoration(labelText: "Senha"),
@@ -84,11 +77,7 @@ class _CreateUser extends State<CreateUser> {
                       "Cadastrar",
                     ),
                     onPressed: () {
-                      if (email == 'gustavo@gmail.com' && password == '123') {
-                        Navigator.of(context).pushReplacementNamed('/home');
-                      } else {
-                        print("Acesso negado!");
-                      }
+                      cadastrar();
                     }),
                 Container(
                   height: 20,
@@ -99,5 +88,36 @@ class _CreateUser extends State<CreateUser> {
         ),
       ),
     );
+  }
+
+  cadastrar() async {
+    try {
+      UserCredential userCredential =
+          await _firebaseAuth.createUserWithEmailAndPassword(
+              email: _emailController.text, password: _passwordController.text);
+      if (userCredential != null) {
+        userCredential.user!.updateDisplayName(_nomeController.text);
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => ChecagemPage()),
+            (route) => false);
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Senha fraca'),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      } else if (e.code == 'email-already-in-use') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Este email já foi cadastrado'),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      }
+    }
   }
 }
