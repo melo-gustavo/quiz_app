@@ -107,28 +107,6 @@ class HomePageState extends State<HomePage> {
                       Container(
                         height: 30,
                       ),
-                      TextButton.icon(
-                        icon: Icon(
-                          Icons.people,
-                          size: 16,
-                          color: AppController.instance.isDartTheme
-                              ? Colors.green
-                              : Colors.white,
-                        ),
-                        label: Text(
-                          'Editar Perfil',
-                          style: TextStyle(
-                            color: AppController.instance.isDartTheme
-                                ? Colors.green
-                                : Colors.white,
-                          ),
-                        ),
-                        onPressed: () =>
-                            Navigator.of(context).pushNamed('/edit-user'),
-                      ),
-                      Container(
-                        height: 30,
-                      ),
                       ElevatedButton(
                           child: Text('Sair'),
                           onPressed: () {
