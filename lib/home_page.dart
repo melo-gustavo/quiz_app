@@ -15,6 +15,7 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    pegarUsuario();
     return Scaffold(
       appBar: AppBar(
         backgroundColor:
@@ -121,6 +122,13 @@ class HomePageState extends State<HomePage> {
         },
       ),
     );
+  }
+
+  pegarUsuario() async {
+    User? usuario = await _firebaseAuth.currentUser;
+    if (usuario != null) {
+      print(usuario);
+    }
   }
 
   sair() async {

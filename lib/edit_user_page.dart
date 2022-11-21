@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/container.dart';
@@ -5,6 +6,8 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:quiz/app_controller.dart';
 import 'package:quiz/home_page.dart';
 import 'package:quiz/app_widget.dart';
+
+import 'checagem_page.dart';
 
 class EditUser extends StatefulWidget {
   const EditUser({super.key});
@@ -14,13 +17,20 @@ class EditUser extends StatefulWidget {
 }
 
 class _EditUser extends State<EditUser> {
-  String name = '';
-  int age = 0;
+  final _nomeController = TextEditingController();
+  final _idadeController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _firebaseAuth = FirebaseAuth.instance;
+
+  String nome = '';
+  String idade = '';
   String email = '';
-  String password = '';
+  String senha = '';
 
   @override
   Widget build(BuildContext context) {
+    pegarUsuario();
     return Scaffold(
       appBar: AppBar(
         backgroundColor:
@@ -49,23 +59,20 @@ class _EditUser extends State<EditUser> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                TextField(
-                    onChanged: ((value) {
-                      name = value;
-                      print(name);
-                    }),
-                    keyboardType: TextInputType.name,
-                    decoration: InputDecoration(
-                      labelText: "Nome",
-                    )),
+                Text(nome),
+                TextFormField(
+                  controller: _nomeController,
+                  keyboardType: TextInputType.name,
+                  decoration: InputDecoration(
+                    labelText: "Nome ",
+                  ),
+                ),
                 Container(
                   height: 20,
                 ),
-                TextField(
-                    onChanged: ((value) {
-                      age = int.parse(value);
-                      print(age);
-                    }),
+                Text(idade),
+                TextFormField(
+                    controller: _idadeController,
                     keyboardType: TextInputType.name,
                     decoration: InputDecoration(
                       labelText: "Idade",
@@ -73,11 +80,9 @@ class _EditUser extends State<EditUser> {
                 Container(
                   height: 20,
                 ),
-                TextField(
-                    onChanged: ((value) {
-                      email = value;
-                      print(email);
-                    }),
+                Text(email),
+                TextFormField(
+                    controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                       labelText: "Email",
@@ -85,11 +90,9 @@ class _EditUser extends State<EditUser> {
                 Container(
                   height: 20,
                 ),
-                TextField(
-                  onChanged: ((value) {
-                    password = value;
-                    print(password);
-                  }),
+                Text(senha),
+                TextFormField(
+                  controller: _passwordController,
                   keyboardType: TextInputType.visiblePassword,
                   obscureText: true,
                   decoration: InputDecoration(labelText: "Senha"),
@@ -102,11 +105,7 @@ class _EditUser extends State<EditUser> {
                       "Modificar",
                     ),
                     onPressed: () {
-                      if (email == 'gustavo@gmail.com' && password == '123') {
-                        Navigator.of(context).pushReplacementNamed('/home');
-                      } else {
-                        print("Acesso negado!");
-                      }
+                      atualizarUsuario();
                     }),
                 Container(
                   height: 20,
@@ -117,5 +116,28 @@ class _EditUser extends State<EditUser> {
         ),
       ),
     );
+  }
+
+  pegarUsuario() async {
+    User? usuario = await _firebaseAuth.currentUser;
+    if (usuario != null) {
+      setState(() {
+        nome = usuario.displayName!;
+        email = usuario.email!;
+      });
+    }
+  }
+
+  atualizarUsuario() async {
+    User? usuario = await _firebaseAuth.currentUser;
+    if (usuario != null) {
+      usuario.updateDisplayName(_nomeController.text);
+      usuario.updateEmail(_emailController.text);
+      usuario.reload();
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => ChecagemPage()),
+          (route) => false);
+    }
   }
 }
