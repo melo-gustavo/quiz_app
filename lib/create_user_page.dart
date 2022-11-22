@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,6 +21,7 @@ class _CreateUser extends State<CreateUser> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _firebaseAuth = FirebaseAuth.instance;
+  final _db = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -90,13 +92,18 @@ class _CreateUser extends State<CreateUser> {
     );
   }
 
-  cadastrar() async {
+  Future<void> cadastrar() async {
     try {
       UserCredential userCredential =
           await _firebaseAuth.createUserWithEmailAndPassword(
               email: _emailController.text, password: _passwordController.text);
       if (userCredential != null) {
         userCredential.user!.updateDisplayName(_nomeController.text);
+        String id = userCredential.user!.uid;
+        await _db.collection("users").doc(id).set({
+          "idade": _idadeController.text,
+          "bestscore": 0,
+        });
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => ChecagemPage()),
