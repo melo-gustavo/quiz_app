@@ -128,6 +128,7 @@ class HomePageState extends State<HomePage> {
     User? usuario = await _firebaseAuth.currentUser;
     if (usuario != null) {
       print(usuario);
+      print(usuario.uid);
     }
   }
 
