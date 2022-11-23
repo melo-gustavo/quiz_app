@@ -99,10 +99,7 @@ class _CreateUser extends State<CreateUser> {
               email: _emailController.text, password: _passwordController.text);
       if (userCredential != null) {
         userCredential.user!.updateDisplayName(_nomeController.text);
-        await _db
-            .collection("users")
-            .doc(userCredential.user!.displayName)
-            .set({
+        await _db.collection("users").doc(userCredential.user!.uid).set({
           "idade": _idadeController.text,
           "bestscore": 0,
         });
