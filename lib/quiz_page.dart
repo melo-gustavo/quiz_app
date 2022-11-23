@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:quiz/app_controller.dart';
 import 'package:quiz/result_page.dart';
@@ -17,93 +19,43 @@ class QuizPage extends StatefulWidget {
 }
 
 class QuizPageState extends State<QuizPage> {
+  final _firebaseAuth = FirebaseAuth.instance;
+  final _db = FirebaseFirestore.instance;
+
+  List allQuestao = [];
+
+  initialise() {
+    listarQuestao().then((value) => {
+          setState(() => {allQuestao = value!})
+        });
+  }
+
   @override
-  List questionsQuiz = [
-    {
-      "question": "Quem descobriu o Brasil ?",
-      "anwsers": [
-        "Dom Pedro I",
-        "Dom Pedro II",
-        "Pedro Alvares Cabral",
-        "Tiringa"
-      ],
-      "correctAnwser": 3
-    },
-    {
-      "question": "Quem descobriu a Espanha ?",
-      "anwsers": [
-        "Dom Pedro I",
-        "Dom Pedro II",
-        "Pedro Alvares Cabral",
-        "Tiringa"
-      ],
-      "correctAnwser": 3
-    },
-    {
-      "question": "Quem descobriu a Inglaterra ?",
-      "anwsers": [
-        "Dom Pedro I",
-        "Dom Pedro II",
-        "Pedro Alvares Cabral",
-        "Tiringa"
-      ],
-      "correctAnwser": 3
-    },
-    {
-      "question": "Quem descobriu a Franaça ?",
-      "anwsers": [
-        "Dom Pedro I",
-        "Dom Pedro II",
-        "Pedro Alvares Cabral",
-        "Tiringa"
-      ],
-      "correctAnwser": 3
-    },
-    {
-      "question": "Quem descobriu a Alemanha ?",
-      "anwsers": [
-        "Dom Pedro I",
-        "Dom Pedro II",
-        "Pedro Alvares Cabral",
-        "Tiringa"
-      ],
-      "correctAnwser": 3
-    },
-    {
-      "question": "Quem descobriu o Brasil ?",
-      "anwsers": [
-        "Dom Pedro I",
-        "Dom Pedro II",
-        "Pedro Alvares Cabral",
-        "Tiringa"
-      ],
-      "correctAnwser": 3
-    },
-  ];
+  void initState() {
+    super.initState();
+    initialise();
+  }
 
-  int questionNumber = 1;
+  int questionNumber = 0;
 
-  int result = 0;
+  String result = "";
 
   int rightQuestions = 0;
+  int indexLista = 0;
 
   Widget build(BuildContext context) {
-    int sizeQuestionsQuiz = questionsQuiz.length;
+    int sizeQuestionsQuiz = 0;
 
-    void handleAnwser(int questionNumber) {
-      if (questionsQuiz[questionNumber - 1]["correctAnwser"] == result) {
+    void handleAnwser(int indexLista) {
+      if (allQuestao[indexLista]["resposta_correta"] == result) {
         rightQuestions++;
       }
     }
 
     void finished(int questionNumber) {
-      if (questionNumber == sizeQuestionsQuiz) {
-        // Navigator.pushReplacementNamed(
-        //   context,
-        //   '/result',
-        // );
+      if (questionNumber == allQuestao.length) {
         Navigator.of(context).pushReplacementNamed('/result',
-            arguments: ScreenArguments(rightQuestions, sizeQuestionsQuiz));
+            arguments: ScreenArguments(rightQuestions, allQuestao.length));
       }
     }
 
@@ -132,90 +84,138 @@ class QuizPageState extends State<QuizPage> {
             child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Text(
-              "Pergunta $questionNumber de $sizeQuestionsQuiz",
-              style: TextStyle(fontSize: 16),
-            ),
-            Text(
-              questionsQuiz[questionNumber - 1]["question"],
-              style: TextStyle(fontSize: 15),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      result = 1;
-                      handleAnwser(questionNumber);
-                      questionNumber++;
-                      finished(questionNumber);
-                    });
-                  },
-                  style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.fromLTRB(100, 20, 100, 20)),
-                  child: Text(
-                    questionsQuiz[questionNumber - 1]["anwsers"][0],
-                    style: TextStyle(fontSize: 19),
-                  )),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      result = 2;
-                      handleAnwser(questionNumber);
-                      questionNumber++;
-                      finished(questionNumber);
-                    });
-                  },
-                  style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.fromLTRB(100, 20, 100, 20)),
-                  child: Text(
-                    questionsQuiz[questionNumber - 1]["anwsers"][1],
-                    style: TextStyle(fontSize: 19),
-                  )),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      result = 3;
-                      handleAnwser(questionNumber);
-                      questionNumber++;
-                      finished(questionNumber);
-                    });
-                  },
-                  style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.fromLTRB(100, 20, 100, 20)),
-                  child: Text(
-                    questionsQuiz[questionNumber - 1]["anwsers"][2],
-                    style: TextStyle(fontSize: 19),
-                  )),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      result = 4;
-                      handleAnwser(questionNumber);
-                      questionNumber++;
-                      finished(questionNumber);
-                    });
-                  },
-                  style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.fromLTRB(100, 20, 100, 20)),
-                  child: Text(
-                    questionsQuiz[questionNumber - 1]["anwsers"][3],
-                    style: TextStyle(fontSize: 19),
-                  )),
-            ),
+            if (allQuestao.isNotEmpty)
+              Text(
+                "Pergunta $questionNumber de ${allQuestao.length}",
+                style: TextStyle(fontSize: 16),
+              ),
+            if (allQuestao.isNotEmpty)
+              Text(
+                allQuestao[indexLista]['nome'],
+                style: TextStyle(fontSize: 15),
+              ),
+            if (allQuestao.isNotEmpty)
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        result = "0";
+                        handleAnwser(indexLista);
+                        questionNumber++;
+                        if (indexLista < allQuestao.length - 1) {
+                          indexLista++;
+                        }
+                        finished(questionNumber);
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.fromLTRB(100, 20, 100, 20)),
+                    child: Text(
+                      allQuestao[indexLista]["resposta_a"],
+                      style: TextStyle(fontSize: 19),
+                    )),
+              ),
+            if (allQuestao.isNotEmpty)
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        result = "1";
+                        handleAnwser(indexLista);
+                        questionNumber++;
+                        if (indexLista < allQuestao.length - 1) {
+                          indexLista++;
+                        }
+                        finished(questionNumber);
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.fromLTRB(100, 20, 100, 20)),
+                    child: Text(
+                      allQuestao[indexLista]["resposta_b"],
+                      style: TextStyle(fontSize: 19),
+                    )),
+              ),
+            if (allQuestao.isNotEmpty)
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        result = "2";
+                        handleAnwser(indexLista);
+                        questionNumber++;
+                        if (indexLista < allQuestao.length - 1) {
+                          indexLista++;
+                        }
+                        finished(questionNumber);
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.fromLTRB(100, 20, 100, 20)),
+                    child: Text(
+                      allQuestao[indexLista]["resposta_c"],
+                      style: TextStyle(fontSize: 19),
+                    )),
+              ),
+            if (allQuestao.isNotEmpty)
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        result = "3";
+                        handleAnwser(indexLista);
+                        questionNumber++;
+                        if (indexLista < allQuestao.length - 1) {
+                          indexLista++;
+                        }
+                        finished(questionNumber);
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.fromLTRB(100, 20, 100, 20)),
+                    child: Text(
+                      allQuestao[indexLista]["resposta_d"],
+                      style: TextStyle(fontSize: 19),
+                    )),
+              ),
           ],
         )),
       ),
     );
+  }
+
+  listarQuestao() async {
+    User? usuario = await _firebaseAuth.currentUser;
+    if (usuario != null) {
+      QuerySnapshot querySnapshot;
+
+      List listQuestao = [];
+
+      try {
+        querySnapshot = await _db.collection('questions').get();
+
+        if (querySnapshot.docs.isNotEmpty) {
+          for (var questao in querySnapshot.docs.toList()) {
+            Map addQuestao = {
+              "nome": questao['nome'],
+              "resposta_correta": questao['resposta_correta'],
+              "resposta_a": questao['respostas'][0],
+              "resposta_b": questao['respostas'][1],
+              "resposta_c": questao['respostas'][2],
+              "resposta_d": questao['respostas'][3],
+            };
+            listQuestao.add(addQuestao);
+          }
+          return listQuestao;
+        }
+      } catch (error) {
+        print(error);
+      }
+    }
   }
 }
 

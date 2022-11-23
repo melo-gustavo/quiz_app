@@ -149,7 +149,9 @@ class RankingTableState extends State<RankingTable> {
           }
           return listRanking;
         }
-      } catch (error) {}
+      } catch (error) {
+        print(error);
+      }
     }
   }
 }
