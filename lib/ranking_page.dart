@@ -144,7 +144,7 @@ class RankingTableState extends State<RankingTable> {
       List listRanking = [];
 
       try {
-        querySnapshot = await _db.collection('ranking').orderBy('nome').get();
+        querySnapshot = await _db.collection('ranking').get();
 
         if (querySnapshot.docs.isNotEmpty) {
           for (var ranking in querySnapshot.docs.toList()) {

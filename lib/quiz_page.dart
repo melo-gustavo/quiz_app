@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:quiz/app_controller.dart';
 import 'package:quiz/result_page.dart';
@@ -17,93 +19,42 @@ class QuizPage extends StatefulWidget {
 }
 
 class QuizPageState extends State<QuizPage> {
+  final _firebaseAuth = FirebaseAuth.instance;
+  final _db = FirebaseFirestore.instance;
+
+  List allQuestao = [];
+
+  initialise() {
+    listarQuestao().then((value) => {
+          setState(() => {allQuestao = value!})
+        });
+  }
+
   @override
-  List questionsQuiz = [
-    {
-      "question": "Quem descobriu o Brasil ?",
-      "anwsers": [
-        "Dom Pedro I",
-        "Dom Pedro II",
-        "Pedro Alvares Cabral",
-        "Tiringa"
-      ],
-      "correctAnwser": 3
-    },
-    {
-      "question": "Quem descobriu a Espanha ?",
-      "anwsers": [
-        "Dom Pedro I",
-        "Dom Pedro II",
-        "Pedro Alvares Cabral",
-        "Tiringa"
-      ],
-      "correctAnwser": 3
-    },
-    {
-      "question": "Quem descobriu a Inglaterra ?",
-      "anwsers": [
-        "Dom Pedro I",
-        "Dom Pedro II",
-        "Pedro Alvares Cabral",
-        "Tiringa"
-      ],
-      "correctAnwser": 3
-    },
-    {
-      "question": "Quem descobriu a Franaça ?",
-      "anwsers": [
-        "Dom Pedro I",
-        "Dom Pedro II",
-        "Pedro Alvares Cabral",
-        "Tiringa"
-      ],
-      "correctAnwser": 3
-    },
-    {
-      "question": "Quem descobriu a Alemanha ?",
-      "anwsers": [
-        "Dom Pedro I",
-        "Dom Pedro II",
-        "Pedro Alvares Cabral",
-        "Tiringa"
-      ],
-      "correctAnwser": 3
-    },
-    {
-      "question": "Quem descobriu o Brasil ?",
-      "anwsers": [
-        "Dom Pedro I",
-        "Dom Pedro II",
-        "Pedro Alvares Cabral",
-        "Tiringa"
-      ],
-      "correctAnwser": 3
-    },
-  ];
+  void initState() {
+    super.initState();
+    initialise();
+  }
 
-  int questionNumber = 1;
+  int questionNumber = 0;
 
-  int result = 0;
+  String result = "";
 
   int rightQuestions = 0;
 
   Widget build(BuildContext context) {
-    int sizeQuestionsQuiz = questionsQuiz.length;
+    int sizeQuestionsQuiz = 0;
 
     void handleAnwser(int questionNumber) {
-      if (questionsQuiz[questionNumber - 1]["correctAnwser"] == result) {
+      if (allQuestao[questionNumber]["resposta_correta"] == result) {
         rightQuestions++;
       }
     }
 
     void finished(int questionNumber) {
-      if (questionNumber == sizeQuestionsQuiz) {
-        // Navigator.pushReplacementNamed(
-        //   context,
-        //   '/result',
-        // );
+      if (questionNumber == allQuestao.length) {
         Navigator.of(context).pushReplacementNamed('/result',
-            arguments: ScreenArguments(rightQuestions, sizeQuestionsQuiz));
+            arguments: ScreenArguments(rightQuestions, allQuestao.length));
       }
     }
 
@@ -133,11 +84,11 @@ class QuizPageState extends State<QuizPage> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Text(
-              "Pergunta $questionNumber de $sizeQuestionsQuiz",
+              "Pergunta $questionNumber de ${allQuestao.length}",
               style: TextStyle(fontSize: 16),
             ),
             Text(
-              questionsQuiz[questionNumber - 1]["question"],
+              allQuestao[questionNumber]['nome'],
               style: TextStyle(fontSize: 15),
             ),
             SizedBox(
@@ -145,7 +96,7 @@ class QuizPageState extends State<QuizPage> {
               child: ElevatedButton(
                   onPressed: () {
                     setState(() {
-                      result = 1;
+                      result = "0";
                       handleAnwser(questionNumber);
                       questionNumber++;
                       finished(questionNumber);
@@ -154,7 +105,7 @@ class QuizPageState extends State<QuizPage> {
                   style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.fromLTRB(100, 20, 100, 20)),
                   child: Text(
-                    questionsQuiz[questionNumber - 1]["anwsers"][0],
+                    allQuestao[questionNumber]["resposta_a"],
                     style: TextStyle(fontSize: 19),
                   )),
             ),
@@ -163,7 +114,7 @@ class QuizPageState extends State<QuizPage> {
               child: ElevatedButton(
                   onPressed: () {
                     setState(() {
-                      result = 2;
+                      result = "1";
                       handleAnwser(questionNumber);
                       questionNumber++;
                       finished(questionNumber);
@@ -172,7 +123,7 @@ class QuizPageState extends State<QuizPage> {
                   style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.fromLTRB(100, 20, 100, 20)),
                   child: Text(
-                    questionsQuiz[questionNumber - 1]["anwsers"][1],
+                    allQuestao[questionNumber]["resposta_b"],
                     style: TextStyle(fontSize: 19),
                   )),
             ),
@@ -181,7 +132,7 @@ class QuizPageState extends State<QuizPage> {
               child: ElevatedButton(
                   onPressed: () {
                     setState(() {
-                      result = 3;
+                      result = "2";
                       handleAnwser(questionNumber);
                       questionNumber++;
                       finished(questionNumber);
@@ -190,7 +141,7 @@ class QuizPageState extends State<QuizPage> {
                   style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.fromLTRB(100, 20, 100, 20)),
                   child: Text(
-                    questionsQuiz[questionNumber - 1]["anwsers"][2],
+                    allQuestao[questionNumber]["resposta_c"],
                     style: TextStyle(fontSize: 19),
                   )),
             ),
@@ -199,7 +150,7 @@ class QuizPageState extends State<QuizPage> {
               child: ElevatedButton(
                   onPressed: () {
                     setState(() {
-                      result = 4;
+                      result = "3";
                       handleAnwser(questionNumber);
                       questionNumber++;
                       finished(questionNumber);
@@ -208,7 +159,7 @@ class QuizPageState extends State<QuizPage> {
                   style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.fromLTRB(100, 20, 100, 20)),
                   child: Text(
-                    questionsQuiz[questionNumber - 1]["anwsers"][3],
+                    allQuestao[questionNumber]["resposta_d"],
                     style: TextStyle(fontSize: 19),
                   )),
             ),
@@ -216,6 +167,34 @@ class QuizPageState extends State<QuizPage> {
         )),
       ),
     );
+  }
+
+  listarQuestao() async {
+    User? usuario = await _firebaseAuth.currentUser;
+    if (usuario != null) {
+      QuerySnapshot querySnapshot;
+
+      List listQuestao = [];
+
+      try {
+        querySnapshot = await _db.collection('questions').get();
+
+        if (querySnapshot.docs.isNotEmpty) {
+          for (var questao in querySnapshot.docs.toList()) {
+            Map addQuestao = {
+              "nome": questao['nome'],
+              "resposta_correta": questao['resposta_correta'],
+              "resposta_a": questao['respostas'][0],
+              "resposta_b": questao['respostas'][1],
+              "resposta_c": questao['respostas'][2],
+              "resposta_d": questao['respostas'][3],
+            };
+            listQuestao.add(addQuestao);
+          }
+          return listQuestao;
+        }
+      } catch (error) {}
+    }
   }
 }
 

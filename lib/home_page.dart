@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:quiz/app_controller.dart';
 import 'package:quiz/checagem_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:quiz/quiz_page.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -58,7 +59,8 @@ class HomePageState extends State<HomePage> {
                       style: TextStyle(fontSize: 17),
                     ),
                     onPressed: () {
-                      Navigator.pushNamed(context, '/quiz');
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context) => QuizPage()));
                     },
                   ),
                   const SizedBox(width: 15),
