@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:quiz/app_controller.dart';
 import 'package:quiz/checagem_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -12,6 +13,7 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   final _firebaseAuth = FirebaseAuth.instance;
+  final _db = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
