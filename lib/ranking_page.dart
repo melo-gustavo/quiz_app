@@ -51,9 +51,17 @@ class RankingTableState extends State<RankingTable> {
       ),
       body: ListView(
         children: [
-          Text("Oláaaaa"),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Text(
+                "Melhores Jogadores",
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(15.0),
             child: Table(
                 border: TableBorder.all(width: 1.0, color: Colors.black),
                 children: [
@@ -100,24 +108,6 @@ class RankingTableState extends State<RankingTable> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      TextButton.icon(
-                        icon: Icon(
-                          Icons.people,
-                          size: 16,
-                          color: AppController.instance.isDartTheme
-                              ? Colors.green
-                              : Colors.white,
-                        ),
-                        label: Text(
-                          'Editar Perfil',
-                          style: TextStyle(
-                            color: AppController.instance.isDartTheme
-                                ? Colors.green
-                                : Colors.white,
-                          ),
-                        ),
-                        onPressed: () => Navigator.pop(context),
-                      ),
                       Container(
                         height: 30,
                       ),
@@ -144,7 +134,10 @@ class RankingTableState extends State<RankingTable> {
       List listRanking = [];
 
       try {
-        querySnapshot = await _db.collection('ranking').orderBy('nome').get();
+        querySnapshot = await _db
+            .collection('ranking')
+            .orderBy('score', descending: true)
+            .get();
 
         if (querySnapshot.docs.isNotEmpty) {
           for (var ranking in querySnapshot.docs.toList()) {

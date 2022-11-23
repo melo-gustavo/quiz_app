@@ -47,7 +47,7 @@ class _ResultState extends State<Result> {
             Text("Resultado",
                 style: TextStyle(fontSize: 28, fontWeight: FontWeight.normal)),
             Text(
-                "Você acertou ${args.rightQuestions}/${args.sizeQuestionsQuiz}",
+                "Você acertou ${args.rightQuestions}/${args.sizeQuestionsQuiz - 1}",
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
             ElevatedButton(
                 onPressed: (() => {
