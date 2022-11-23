@@ -136,7 +136,7 @@ class RankingTableState extends State<RankingTable> {
       try {
         querySnapshot = await _db
             .collection('ranking')
-            .orderBy('score', descending: true)
+            .orderBy('score', descending: false)
             .get();
 
         if (querySnapshot.docs.isNotEmpty) {

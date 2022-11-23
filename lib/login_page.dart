@@ -28,6 +28,9 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Padding(
+                    padding: EdgeInsets.all(30),
+                    child: Image(image: AssetImage('assets/quiz.png'))),
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
