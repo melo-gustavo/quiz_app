@@ -41,12 +41,13 @@ class QuizPageState extends State<QuizPage> {
   String result = "";
 
   int rightQuestions = 0;
+  int indexLista = 0;
 
   Widget build(BuildContext context) {
     int sizeQuestionsQuiz = 0;
 
-    void handleAnwser(int questionNumber) {
-      if (allQuestao[questionNumber]["resposta_correta"] == result) {
+    void handleAnwser(int indexLista) {
+      if (allQuestao[indexLista]["resposta_correta"] == result) {
         rightQuestions++;
       }
     }
@@ -83,86 +84,104 @@ class QuizPageState extends State<QuizPage> {
             child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Text(
-              "Pergunta $questionNumber de ${allQuestao.length}",
-              style: TextStyle(fontSize: 16),
-            ),
-            Text(
-              allQuestao[questionNumber]['nome'],
-              style: TextStyle(fontSize: 15),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      result = "0";
-                      handleAnwser(questionNumber);
-                      questionNumber++;
-                      finished(questionNumber);
-                    });
-                  },
-                  style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.fromLTRB(100, 20, 100, 20)),
-                  child: Text(
-                    allQuestao[questionNumber]["resposta_a"],
-                    style: TextStyle(fontSize: 19),
-                  )),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      result = "1";
-                      handleAnwser(questionNumber);
-                      questionNumber++;
-                      finished(questionNumber);
-                    });
-                  },
-                  style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.fromLTRB(100, 20, 100, 20)),
-                  child: Text(
-                    allQuestao[questionNumber]["resposta_b"],
-                    style: TextStyle(fontSize: 19),
-                  )),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      result = "2";
-                      handleAnwser(questionNumber);
-                      questionNumber++;
-                      finished(questionNumber);
-                    });
-                  },
-                  style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.fromLTRB(100, 20, 100, 20)),
-                  child: Text(
-                    allQuestao[questionNumber]["resposta_c"],
-                    style: TextStyle(fontSize: 19),
-                  )),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      result = "3";
-                      handleAnwser(questionNumber);
-                      questionNumber++;
-                      finished(questionNumber);
-                    });
-                  },
-                  style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.fromLTRB(100, 20, 100, 20)),
-                  child: Text(
-                    allQuestao[questionNumber]["resposta_d"],
-                    style: TextStyle(fontSize: 19),
-                  )),
-            ),
+            if (allQuestao.isNotEmpty)
+              Text(
+                "Pergunta $questionNumber de ${allQuestao.length}",
+                style: TextStyle(fontSize: 16),
+              ),
+            if (allQuestao.isNotEmpty)
+              Text(
+                allQuestao[indexLista]['nome'],
+                style: TextStyle(fontSize: 15),
+              ),
+            if (allQuestao.isNotEmpty)
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        result = "0";
+                        handleAnwser(indexLista);
+                        questionNumber++;
+                        if (indexLista < allQuestao.length - 1) {
+                          indexLista++;
+                        }
+                        finished(questionNumber);
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.fromLTRB(100, 20, 100, 20)),
+                    child: Text(
+                      allQuestao[indexLista]["resposta_a"],
+                      style: TextStyle(fontSize: 19),
+                    )),
+              ),
+            if (allQuestao.isNotEmpty)
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        result = "1";
+                        handleAnwser(indexLista);
+                        questionNumber++;
+                        if (indexLista < allQuestao.length - 1) {
+                          indexLista++;
+                        }
+                        finished(questionNumber);
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.fromLTRB(100, 20, 100, 20)),
+                    child: Text(
+                      allQuestao[indexLista]["resposta_b"],
+                      style: TextStyle(fontSize: 19),
+                    )),
+              ),
+            if (allQuestao.isNotEmpty)
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        result = "2";
+                        handleAnwser(indexLista);
+                        questionNumber++;
+                        if (indexLista < allQuestao.length - 1) {
+                          indexLista++;
+                        }
+                        finished(questionNumber);
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.fromLTRB(100, 20, 100, 20)),
+                    child: Text(
+                      allQuestao[indexLista]["resposta_c"],
+                      style: TextStyle(fontSize: 19),
+                    )),
+              ),
+            if (allQuestao.isNotEmpty)
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        result = "3";
+                        handleAnwser(indexLista);
+                        questionNumber++;
+                        if (indexLista < allQuestao.length - 1) {
+                          indexLista++;
+                        }
+                        finished(questionNumber);
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.fromLTRB(100, 20, 100, 20)),
+                    child: Text(
+                      allQuestao[indexLista]["resposta_d"],
+                      style: TextStyle(fontSize: 19),
+                    )),
+              ),
           ],
         )),
       ),
@@ -193,7 +212,9 @@ class QuizPageState extends State<QuizPage> {
           }
           return listQuestao;
         }
-      } catch (error) {}
+      } catch (error) {
+        print(error);
+      }
     }
   }
 }

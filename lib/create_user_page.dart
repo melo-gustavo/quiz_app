@@ -99,11 +99,13 @@ class _CreateUser extends State<CreateUser> {
               email: _emailController.text, password: _passwordController.text);
       if (userCredential != null) {
         userCredential.user!.updateDisplayName(_nomeController.text);
-        String id = userCredential.user!.uid;
-        // await _db.collection("users").doc(id).set({
-        //   "idade": _idadeController.text,
-        //   "bestscore": 0,
-        // });
+        await _db
+            .collection("users")
+            .doc(userCredential.user!.displayName)
+            .set({
+          "idade": _idadeController.text,
+          "bestscore": 0,
+        });
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => ChecagemPage()),

@@ -59,8 +59,7 @@ class HomePageState extends State<HomePage> {
                       style: TextStyle(fontSize: 17),
                     ),
                     onPressed: () {
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) => QuizPage()));
+                      Navigator.of(context).pushNamed('/quiz');
                     },
                   ),
                   const SizedBox(width: 15),

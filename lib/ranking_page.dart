@@ -144,7 +144,10 @@ class RankingTableState extends State<RankingTable> {
       List listRanking = [];
 
       try {
-        querySnapshot = await _db.collection('ranking').get();
+        querySnapshot = await _db
+            .collection('ranking')
+            .orderBy('score', descending: true)
+            .get();
 
         if (querySnapshot.docs.isNotEmpty) {
           for (var ranking in querySnapshot.docs.toList()) {
@@ -156,7 +159,9 @@ class RankingTableState extends State<RankingTable> {
           }
           return listRanking;
         }
-      } catch (error) {}
+      } catch (error) {
+        print(error);
+      }
     }
   }
 }
