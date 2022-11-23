@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:quiz/app_controller.dart';
 
@@ -9,6 +11,23 @@ class RankingTable extends StatefulWidget {
 }
 
 class RankingTableState extends State<RankingTable> {
+  final _firebaseAuth = FirebaseAuth.instance;
+  final _db = FirebaseFirestore.instance;
+
+  List allRanking = [];
+
+  initialise() {
+    listarRanking().then((value) => {
+          setState(() => {allRanking = value!, print(allRanking)})
+        });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initialise();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,57 +49,37 @@ class RankingTableState extends State<RankingTable> {
           ),
         ],
       ),
-      body: ListView(children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Center(
-              child: Text(
-            'Melhores Jogadores',
-            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-          )),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(40.0),
-          child: DataTable(
-            columns: [
-              DataColumn(
-                  label: Text('Nome',
-                      style: TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold))),
-              DataColumn(
-                  label: Text('Acertos',
-                      style: TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold))),
-              DataColumn(
-                  label: Text('Tempo',
-                      style: TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold))),
-            ],
-            rows: [
-              DataRow(cells: [
-                DataCell(Text('Stephen')),
-                DataCell(Text('10')),
-                DataCell(Text('2 min')),
-              ]),
-              DataRow(cells: [
-                DataCell(Text('Maluco')),
-                DataCell(Text('9')),
-                DataCell(Text('3 min')),
-              ]),
-              DataRow(cells: [
-                DataCell(Text('Jane')),
-                DataCell(Text('8')),
-                DataCell(Text('4 min')),
-              ]),
-              DataRow(cells: [
-                DataCell(Text('Carinha que mora logo ali')),
-                DataCell(Text('7')),
-                DataCell(Text('5 min')),
-              ]),
-            ],
+      body: ListView(
+        children: [
+          Text("Oláaaaa"),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Table(
+                border: TableBorder.all(width: 1.0, color: Colors.black),
+                children: [
+                  for (var ranking in allRanking)
+                    TableRow(children: [
+                      TableCell(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text(ranking['nome']),
+                          ],
+                        ),
+                      ),
+                      TableCell(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text(ranking['score'].toString()),
+                          ],
+                        ),
+                      )
+                    ])
+                ]),
           ),
-        ),
-      ]),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         backgroundColor:
             AppController.instance.isDartTheme ? Colors.green : Colors.green,
@@ -135,6 +134,30 @@ class RankingTableState extends State<RankingTable> {
         },
       ),
     );
+  }
+
+  listarRanking() async {
+    User? usuario = await _firebaseAuth.currentUser;
+    if (usuario != null) {
+      QuerySnapshot querySnapshot;
+
+      List listRanking = [];
+
+      try {
+        querySnapshot = await _db.collection('ranking').orderBy('nome').get();
+
+        if (querySnapshot.docs.isNotEmpty) {
+          for (var ranking in querySnapshot.docs.toList()) {
+            Map addRanking = {
+              "nome": ranking['nome'],
+              "score": ranking['score']
+            };
+            listRanking.add(addRanking);
+          }
+          return listRanking;
+        }
+      } catch (error) {}
+    }
   }
 }
 
